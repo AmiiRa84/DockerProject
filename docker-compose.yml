@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+
+  proxy:
+    build: ./proxy
+    container_name: nginx-proxy
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - app-network  
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    container_name: go-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD_FILE=/run/secrets/db-pass
+    networks:
+      - app-network  
+    secrets:
+      - db-pass   
+    depends_on:
+      - db
+  
+  db:
+    image: mysql:latest
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-pass
+      MYSQL_DATABASE: example
+    networks:
+      - app-network  
+    volumes:
+      - db_data:/var/lib/mysql
+    secrets:
+      - db-pass    
+
+networks:
+  app-network:  
+    driver: bridge
+
+volumes:
+  db_data:
+
+secrets:
+  db-pass:
+    file: ./db-pass.txt
