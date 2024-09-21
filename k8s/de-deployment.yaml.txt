@@ -32,3 +32,4 @@ spec:
         persistentVolumeClaim:
           claimName: db-storage-pvc  # Use the PVC created earlier
 
+ #this is my project
