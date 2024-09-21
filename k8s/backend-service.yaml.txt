@@ -1,0 +1,15 @@
+# backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend  # Name of the service
+  namespace: webapp  # Specify the namespace
+spec:
+  selector:
+    app: backend  # Select pods with the label "app: backend"
+  ports:
+  - name: backend  # Name for the backend service port
+    protocol: TCP
+    port: 8000  # Service port
+    targetPort: 8000  # Target port on the pod
+

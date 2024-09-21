@@ -1,0 +1,20 @@
+# proxy-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy  # Name of the service
+  namespace: webapp  # Specify the namespace
+spec:
+  selector:
+    app: proxy  # Select pods with the label "app: proxy"
+  ports:
+  - name: https  # Name for the HTTPS port
+    protocol: TCP
+    port: 443  # Service port
+    targetPort: 443  # Target port on the pod
+  - name: http  # Name for the HTTP port
+    protocol: TCP
+    port: 80  # Service port for HTTP
+    targetPort: 80  # Target port on the pod
+
+

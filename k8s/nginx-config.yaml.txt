@@ -1,0 +1,23 @@
+# nginx-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config  # Name of the ConfigMap
+  namespace: webapp  # Specify the namespace
+data:
+  default.conf: |
+    server {
+        listen 443 ssl;  # Enable SSL
+        server_name localhost;  # Server name
+        ssl_certificate /etc/nginx/ssl/nginx.crt;  # Path to SSL certificate
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;  # Path to SSL key
+
+        location / {
+            proxy_pass http://backend:8000;  # Forward requests to backend
+            proxy_set_header Host $host;  # Pass original host
+            proxy_set_header X-Real-IP $remote_addr;  # Pass client IP
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # Pass full IP chain
+            proxy_set_header X-Forwarded-Proto $scheme;  # Pass original protocol
+        }
+    }
+

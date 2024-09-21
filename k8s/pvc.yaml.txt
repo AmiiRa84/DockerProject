@@ -1,0 +1,13 @@
+# pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-storage-pvc  # Name of the PVC
+  namespace: webapp  # Specify the namespace
+spec:
+  accessModes:
+    - ReadWriteOnce  # Access mode
+  resources:
+    requests:
+      storage: 1Gi  # Requested storage size
+

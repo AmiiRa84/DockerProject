@@ -1,0 +1,34 @@
+# db-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db  # Name of the deployment
+  namespace: webapp  # Specify the namespace
+spec:
+  replicas: 1  # Number of replicas
+  selector:
+    matchLabels:
+      app: database  # Selector to match pods
+  template:
+    metadata:
+      labels:
+        app: database  # Labels for pods
+    spec:
+      containers:
+      - name: mysql  # Container name
+        image: mysql:latest  # MySQL image
+        ports:
+        - containerPort: 3306  # Expose port 3306 for MySQL
+        env:
+        - name: MYSQL_ROOT_PASSWORD_FILE
+          value: "/run/secrets/db-pass"  # File path for root password
+        - name: MYSQL_DATABASE
+          value: "example"  # Name of the database to create
+        volumeMounts:
+        - name: db-storage  # Mount for persistent storage
+          mountPath: /var/lib/mysql  # Path inside the container
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: db-storage-pvc  # Use the PVC created earlier
+

@@ -1,0 +1,15 @@
+# db-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: db  # Name of the service
+  namespace: webapp  # Specify the namespace
+spec:
+  selector:
+    app: database  # Select pods with the label "app: database"
+  ports:
+  - name: mysql  # Name for the MySQL service port
+    protocol: TCP
+    port: 3306  # Service port
+    targetPort: 3306  # Target port on the pod
+

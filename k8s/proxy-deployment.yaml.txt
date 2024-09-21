@@ -1,0 +1,35 @@
+# proxy-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy  # Name of the deployment
+  namespace: webapp  # Specify the namespace
+spec:
+  replicas: 2  # Number of replicas
+  selector:
+    matchLabels:
+      app: proxy  # Selector to match pods
+  template:
+    metadata:
+      labels:
+        app: proxy  # Labels for pods
+    spec:
+      containers:
+      - name: proxy  # Container name
+        image: nginx:alpine  # Nginx image
+        ports:
+        - containerPort: 443  # Expose port 443 for HTTPS
+        - containerPort: 80  # Expose port 80 for HTTP
+        volumeMounts:
+        - name: ssl-certs  # Mount SSL certificates
+          mountPath: /etc/nginx/ssl  # Path inside the container
+        - name: nginx-config  # Mount Nginx config
+          mountPath: /etc/nginx/conf.d  # Path inside the container
+      volumes:
+      - name: ssl-certs
+        secret:
+          secretName: nginx-ssl  # Use a secret for SSL certificates (create separately)
+      - name: nginx-config
+        configMap:
+          name: nginx-config  # Use ConfigMap for Nginx config
+
