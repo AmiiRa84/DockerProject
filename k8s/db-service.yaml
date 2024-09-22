@@ -5,6 +5,7 @@ metadata:
   name: db  # Name of the service
   namespace: webapp  # Specify the namespace
 spec:
+  type: ClusterIP
   selector:
     app: database  # Select pods with the label "app: database"
   ports:

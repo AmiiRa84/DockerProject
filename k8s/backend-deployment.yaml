@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      volumes:
+      - name: db-password
+        secret:
+          secretName: db-secret
+      - name: pre-install
+        emptyDir: {}
+      initContainers:
+      - name: pre-install
+        image: busybox
+        command: ['sh', '-c', 'cat /db-secret/db-password >> /run/secrets/db-password']
+        volumeMounts:
+        - name: db-password
+          mountPath: "/db-secret"
+        - name: pre-install
+          mountPath: "/run/secrets"
+      containers:
+      - name: backend
+        image: zyadtarek/backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: pre-install
+          mountPath: "/run/secrets"
+        - name: db-password
+          mountPath: "/db-secret"
+    
